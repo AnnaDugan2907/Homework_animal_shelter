@@ -17,79 +17,41 @@ import java.util.List;
 @Service
 public class TelegramBotUpdatesListener implements UpdatesListener {
 
+    // Логгер для вывода информации и отладки
     private Logger logger = LoggerFactory.getLogger(TelegramBotUpdatesListener.class);
 
     @Autowired
     private TelegramBot telegramBot;
 
-    private Bot bot; // создаем поле для экземпляра Bot
+    // Экземпляр класса Bot для обработки логики диалога
+    private Bot bot;
 
     @PostConstruct
     public void init() {
         telegramBot.setUpdatesListener(this);
-        bot = new Bot(); // инициализация экземпляра
+        bot = new Bot();
     }
-//
-//    @PostConstruct
-//    public void init() {
-//        telegramBot.setUpdatesListener(this);
-//    }
-
-//    @Override
-//    public int process(List<Update> updates) {
-//        updates.forEach(update -> {
-//            logger.info("Processing update: {}", update);
-//            // Process your updates here
-//        });
-//        return UpdatesListener.CONFIRMED_UPDATES_ALL;
-//    }
-
-//    @Override
-//    public int process(List<Update> updates) {
-//        updates.forEach(update -> {
-//            logger.info("Processing update: {}", update);
-//
-//            if (update.message() != null && update.message().text() != null) {
-//                String messageText = update.message().text();
-//                Long chatId = update.message().chat().id();
-//
-//                if (messageText.equals("/start")) {
-//                    sendMessage(chatId, "Добро пожаловать! Я ваш помощник.");
-//                } else {
-//                    // Обработка других сообщений
-//                    // Например, вызов метода обработки диалогов
-//                    // String response = processUserMessage(chatId, messageText);
-//                    // sendMessage(chatId, response);
-//                }
-//            }
-//        });
-//        return UpdatesListener.CONFIRMED_UPDATES_ALL;
-//    }
-//
-//    private void sendMessage(Long chatId, String text) {
-//        telegramBot.execute(new SendMessage(chatId, text));
-//    }
-
 
     @Override
     public int process(List<Update> updates) {
         for (Update update : updates) {
             logger.info("Обработка обновления: {}", update);
 
+            // Проверка наличия текстового сообщения
             if (update.message() != null && update.message().text() != null) {
                 String messageText = update.message().text();
                 Long chatId = update.message().chat().id();
-
-                // Используем chatId как userId
                 String userId = chatId.toString();
 
-                // Обработка сообщения через ваш класс Bot
+                // Обработка сообщения через логику бота
                 String response = bot.processMessage(userId, messageText);
 
                 // Отправка ответа пользователю
                 sendMessage(chatId, response);
             }
         }
+
+        // Возвращаем статус, подтверждающий, что все обновления обработаны
         return UpdatesListener.CONFIRMED_UPDATES_ALL;
     }
 

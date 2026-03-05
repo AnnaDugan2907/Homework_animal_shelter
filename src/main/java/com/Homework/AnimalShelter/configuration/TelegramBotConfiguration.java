@@ -9,9 +9,11 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class TelegramBotConfiguration {
 
+    // Получение токена бота из внешних настроек
     @Value("${telegram.bot.token}")
     private String token;
 
+    // Создание бина TelegramBot для использования в приложении
     @Bean
     public TelegramBot telegramBot() {
         TelegramBot bot = new TelegramBot(token);
