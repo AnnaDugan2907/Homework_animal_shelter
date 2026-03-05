@@ -1,8 +1,8 @@
 package com.Homework.AnimalShelter.model;
 
 public class UserSession {
-    private int currentStage; // этап взаимодействия
-    private String shelterType; // "cats" или "dogs"
+    private int currentStage;
+    private String shelterType;
 
     // геттеры и сеттеры
     public int getCurrentStage() {
