@@ -14,28 +14,29 @@ public class Bot  {
     private ReportHandler reportHandler = new ReportHandler();
     private AdoptionManager adoptionManager = new AdoptionManager();
 
+    //Обработка входящего сообщения пользователя
     public String processMessage(String userId, String message) {
         UserSession session = sessions.getOrDefault(userId, new UserSession());
 
         String response;
 
         switch (session.getCurrentStage()) {
-            case "0":
+            case "0":// Стартовая точка
                 response = welcomeUser(session);
                 break;
-            case "1":
+            case "1":// Выбор приюта
                 response = handleStage1(session, message);
                 break;
-            case "2":
+            case "2":// Главное меню
                 response = handleMainMenu(session, message);
                 break;
-            case "3":
+            case "3":// Сбор контактных данных
                 response = handleContactCollection(session, message);
                 break;
-            case "4":
+            case "4":// Запрос волонтера
                 response = handleVolunteerRequest(session, message);
                 break;
-            case "5":
+            case "5":// Информация по приюту или процедура адаптации
                 response = handleAdoptionInfo(session, message);
                 if ("cats".equals(session.getShelterType())) {
                     response = handleAdoptionInfo(session, message);
@@ -43,18 +44,20 @@ public class Bot  {
                     response = handleAdoptionInfo1(session, message);
                 }
                 break;
-            case "6":
+            case "6":// Ведение ежедневного отчета
                 response = reportHandler.handleDailyReport(session, message);
                 break;
-            default:
+            default:// Если этап не определен,
                 response = "Начинаем заново. Введите 'привет' для начала.";
                 session.setCurrentStage("0");
         }
 
+        // Обновляем сессию пользователя
         sessions.put(userId, session);
         return response;
     }
 
+    // Приветственное сообщение и выбор приюта
     private String welcomeUser(UserSession session) {
         session.setCurrentStage("1");
         return "Привет! Я виртуальный помощник приюта для животных.\n\n" +
@@ -63,6 +66,7 @@ public class Bot  {
                 "2️⃣ Приют для собак";
     }
 
+    // Обработка этапа выбора приюта
     private String handleStage1(UserSession session, String message) {
         if (message.equals("1") || message.toLowerCase().contains("кошек")) {
             session.setShelterType("cats");
@@ -79,6 +83,7 @@ public class Bot  {
         }
     }
 
+    // Сохранение контактных данных пользователя
     private String handleContactCollection(UserSession session, String message) {
         session.setUserContacts(message);
         session.setCurrentStage("2");
@@ -87,6 +92,8 @@ public class Bot  {
                 showMainMenu(session);
     }
 
+
+    // Отображение главного меню
     public String showMainMenu(UserSession session) {
         return "Главное меню:\n\n" +
                 "1️⃣  Узнать информацию о приюте\n\n" +
@@ -98,6 +105,7 @@ public class Bot  {
                 "Введите номер варианта.";
     }
 
+    // Обработка выбора из главного меню
     private String handleMainMenu(UserSession session, String message) {
         switch (message) {
             case "0":
@@ -134,6 +142,7 @@ public class Bot  {
         }
     }
 
+    // Меню для выбора процедур по взятию животного (кошки)
     private String showAdoptionMenu(UserSession session) {
         return "Как взять животное из приюта:\n\n" +
                 "1️⃣ Правила знакомства с животным\n\n" +
@@ -147,6 +156,7 @@ public class Bot  {
                 "Выберите пункт:";
     }
 
+    // Меню для выбора процедур по взятию животного (собаки)
     private String showAdoptionMenu1(UserSession session) {
         return "Как взять животное из приюта:\n\n" +
                 "1️⃣ Правила знакомства с животным\n\n" +
@@ -162,6 +172,7 @@ public class Bot  {
                 "Выберите пункт:";
     }
 
+    // Форма для ведения ежедневного отчета
     private String showDailyReportForm(UserSession session) {
         return "📋 Форма ежедневного отчёта:\n\n" +
                 "Пожалуйста, отправьте:\n" +
@@ -170,6 +181,7 @@ public class Bot  {
                 "Отправьте фото и текст в одном сообщении или по очереди.";
     }
 
+    // Обработка выбранного пункта по процедуре взятия животного (кошки)
     private String handleAdoptionInfo(UserSession session, String message) {
         switch (message) {
             case "0":
@@ -194,6 +206,7 @@ public class Bot  {
         }
     }
 
+    // Обработка выбранного пункта по процедуре взятия животного (собаки)
     private String handleAdoptionInfo1(UserSession session, String message) {
         switch (message) {
             case "0":
@@ -224,6 +237,7 @@ public class Bot  {
 
 
     private AdoptionManager manager = new AdoptionManager();
+    // Обработка запроса волонтера
     private String handleVolunteerRequest(UserSession session, String message) {
         String issue = session.getVolunteerIssue();
         String userContacts = session.getUserContacts();
@@ -267,6 +281,7 @@ public class Bot  {
         return "Пожалуйста, отправьте отчет или используйте команду /report.";
     }
 
+    // Обработка отчета о питомце
     private String handleReport(Adopter user, String text, Optional<String> photoPath) {
         boolean hasPhoto = photoPath.isPresent();
         boolean hasText = text != null && !text.trim().isEmpty();
@@ -294,18 +309,16 @@ public class Bot  {
 
         // Проверка срока
         manager.checkTrialStatus(user);
-
         return "Спасибо за отчет!";
     }
 
     private void sendWarning(Adopter user) {
         System.out.println("Отправка предупреждения пользователю: " + user.getUserId());
-        // Реализовать отправку сообщения
     }
 
     // Метод для запуска проверки пропущенных отчетов
     public void runDailyCheck() {
         manager.checkReports();
     }
-
+        
 }
