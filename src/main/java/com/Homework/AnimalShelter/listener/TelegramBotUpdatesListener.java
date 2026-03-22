@@ -15,7 +15,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-public class TelegramBotUpdatesListener implements UpdatesListener {
+public class TelegramBotUpdatesListener implements UpdatesListener  {
 
     // Логгер для вывода информации и отладки
     private Logger logger = LoggerFactory.getLogger(TelegramBotUpdatesListener.class);
@@ -31,7 +31,6 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
         telegramBot.setUpdatesListener(this);
         bot = new Bot();
     }
-
     @Override
     public int process(List<Update> updates) {
         for (Update update : updates) {
