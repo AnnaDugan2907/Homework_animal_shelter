@@ -1,6 +1,7 @@
 package com.Homework.AnimalShelter.model;
 
 public class ShelterInfoProvider {
+     // Метод возвращает информацию о приюте для кошек
     public String getCatsShelterInfo() {
         return "Приют для кошек «Тёплый дом» (г. Магнитогорск)\n" +
                 "Адрес: г. Магнитогорск, ул. Зелёная, д. 18 (район «Старый город»)\n\n" +
@@ -22,6 +23,7 @@ public class ShelterInfoProvider {
                 "0️⃣ Назад в главное меню";
     }
 
+    // Метод возвращает информацию о приюте для собак
     public String getDogsShelterInfo() {
         return "Приют для собак «Верный друг» (г. Магнитогорск)\n" +
                 "Адрес: г. Магнитогорск, ул. Лесная, д. 7 (район «Заречье»)\n\n" +
@@ -45,6 +47,7 @@ public class ShelterInfoProvider {
                 "0️⃣ Назад в главное меню";
     }
 
+    // Метод возвращает правила знакомства с питомцами, зависит от типа приюта
     public String getAcquaintanceRules(String shelterType) {
         if ("cats".equals(shelterType)) {
             return "😸 Правила знакомства с кошкой:\n\n" +
@@ -67,6 +70,7 @@ public class ShelterInfoProvider {
         }
     }
 
+    // Метод возвращает список необходимых документов для получения животного
     public String getRequiredDocuments(String shelterType) {
         return "📝 Документы для взятия животного:\n\n" +
                 "• Паспорт или иной документ, удостоверяющий личность\n" +
@@ -80,6 +84,7 @@ public class ShelterInfoProvider {
                 "- рекомендации по уходу";
     }
 
+    // Метод дает советы по транспортировке кошек
     public String getTransportationTips(String shelterType) {
         if ("cats".equals(shelterType)) {
             return "🚘 Рекомендации по транспортировке кошки:\n\n" +
@@ -100,6 +105,7 @@ public class ShelterInfoProvider {
         }
     }
 
+    // Метод возвращает рекомендации по обустройству дома для котят или щенков
     public String getHomeSetupForYoung(String shelterType) {
         if ("cats".equals(shelterType)) {
             return "🏠 Обустройство дома для котёнка:\n\n" +
@@ -122,6 +128,7 @@ public class ShelterInfoProvider {
         }
     }
 
+    // Метод возвращает рекомендации по обустройству дома для взрослого питомца
     public String getHomeSetupForAdult(String shelterType) {
         if ("cats".equals(shelterType)) {
             return "🏠 Обустройство дома для взрослой кошки:\n\n" +
@@ -143,6 +150,7 @@ public class ShelterInfoProvider {
         }
     }
 
+    // Метод возвращает рекомендации по обустройству для животных с ограниченными возможностями
     public String getHomeSetupForDisabled() {
         return "🏠 Обустройство для животного с ограниченными возможностями:\n\n" +
                 "Для животных с проблемами зрения:\n" +
@@ -163,6 +171,7 @@ public class ShelterInfoProvider {
                 "• Специальные приспособления (инвалидные коляски и т. д.)";
     }
 
+    // Метод дает советы по первичному обучению собаке (кинологические советы)
     public String getDogTrainingTips() {
         return "Советы кинолога по первичному общению с собакой:\n\n" +
                 "Первые 3–7 дней:\n" +
@@ -183,12 +192,14 @@ public class ShelterInfoProvider {
                 "• При необходимости обратитесь к кинологу";
     }
 
+    // Метод возвращает список рекомендуемых кинологов или центров
     public String getRecommendedTrainers() {
         return "1. Центр дрессировки 'Верный друг'\n" +
                 "Групповые и индивидуальные занятия\n" +
                 "Адрес: г. Магнитогорск, ул. Спортивная, 15";
     }
 
+    // Метод возвращает причины отказа в выдаче животного из приюта
     public String getRejectionReasons(String shelterType) {
         return "🚫 Причины отказа в выдаче животного из приюта:\n\n" +
                 "1. Проблемы с документами:\n" +
