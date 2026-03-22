@@ -2,6 +2,7 @@ package com.Homework.AnimalShelter.model;
 
 public class ReportHandler {
 
+    // Метод отображает главное меню пользователю
     private String showMainMenu(UserSession session) {
         return "Главное меню:\n\n" +
                 "1️⃣  Узнать информацию о приюте\n\n" +
@@ -13,6 +14,7 @@ public class ReportHandler {
                 "Введите номер варианта.";
     }
 
+    // Обработка ежедневного отчёта о питомце
     public String handleDailyReport(UserSession session, String message) {
         boolean hasPhoto = message.toLowerCase().contains("photo");
         boolean hasText = message != null && !message.trim().isEmpty() && !message.toLowerCase().contains("photo");
@@ -37,6 +39,7 @@ public class ReportHandler {
         }
     }
 
+    // Проверяет качество последнего отчёта
     public void checkReportQuality(UserSession session) {
         if (!session.isLastReportHadPhoto() || !session.isLastReportHadText()) {
             session.setPoorReportCount(session.getPoorReportCount() + 1);
@@ -48,11 +51,13 @@ public class ReportHandler {
         }
     }
 
+    // Отправляет предупреждение волонтёру о плохом качестве отчётов
     public void sendPoorReportWarning(UserSession session) {
         System.out.println("⚠️ Предупреждение волонтёру: усыновитель заполняет отчёты некачественно.");
         // В реальной системе — отправка сообщения
     }
 
+    // Отправляет напоминание о необходимости продолжать отчёты
     public void sendTrialReminder(UserSession session, int daysLeft) {
         String reminder = String.format(
                 ("⏱️ Напоминаем: до окончания испытательного срока осталось %d дней.\n\n" +
