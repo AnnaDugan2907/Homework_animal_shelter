@@ -1,4 +1,4 @@
-package com.Homework.AnimalShelter.model;
+package com.Homework.AnimalShelter.info;
 
 public class ShelterInfoProvider {
      // Метод возвращает информацию о приюте для кошек

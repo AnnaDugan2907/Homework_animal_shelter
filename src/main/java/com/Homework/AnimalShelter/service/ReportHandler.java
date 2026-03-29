@@ -1,9 +1,11 @@
-package com.Homework.AnimalShelter.model;
+package com.Homework.AnimalShelter.service;
+
+import com.Homework.AnimalShelter.model.UserSession;
 
 public class ReportHandler {
 
     // Метод отображает главное меню пользователю
-    private String showMainMenu(UserSession session) {
+    public String showMainMenu(UserSession session) {
         return "Главное меню:\n\n" +
                 "1️⃣  Узнать информацию о приюте\n\n" +
                 "2️⃣ Как взять животное из приюта\n\n" +
@@ -16,6 +18,10 @@ public class ReportHandler {
 
     // Обработка ежедневного отчёта о питомце
     public String handleDailyReport(UserSession session, String message) {
+        if (message == null) {
+            return "Ошибка: сообщение не предоставлено";
+        }
+
         boolean hasPhoto = message.toLowerCase().contains("photo");
         boolean hasText = message != null && !message.trim().isEmpty() && !message.toLowerCase().contains("photo");
 

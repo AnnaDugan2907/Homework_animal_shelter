@@ -1,7 +1,9 @@
-package com.Homework.AnimalShelter.model;
+package com.Homework.AnimalShelter.service;
 
 
-import java.time.LocalDate;
+import com.Homework.AnimalShelter.info.ShelterInfoProvider;
+import com.Homework.AnimalShelter.model.*;
+
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
@@ -17,6 +19,12 @@ public class Bot  {
     //Обработка входящего сообщения пользователя
     public String processMessage(String userId, String message) {
         UserSession session = sessions.getOrDefault(userId, new UserSession());
+
+        // Обработка пустых и null-сообщений
+        if (message == null || message.trim().isEmpty()) {
+            session.setCurrentStage("0");
+            return "Начинаем заново. Введите 'привет' для начала.";
+        }
 
         String response;
 
@@ -305,7 +313,7 @@ public class Bot  {
         }
 
         // Обновляем дату последнего отчета
-        user.setLastReportDate(LocalDate.now());
+        user.setLastReportDate(LocalDateTime.now());
 
         // Проверка срока
         manager.checkTrialStatus(user);
