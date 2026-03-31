@@ -1,11 +1,7 @@
-package com.Homework.AnimalShelter.service;
-
-import com.Homework.AnimalShelter.model.Adopter;
-import com.Homework.AnimalShelter.model.DailyReport;
+package com.Homework.AnimalShelter.model;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
 

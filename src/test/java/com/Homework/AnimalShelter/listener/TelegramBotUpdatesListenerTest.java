@@ -1,6 +1,6 @@
 package com.Homework.AnimalShelter.listener;
 
-import com.Homework.AnimalShelter.service.Bot;
+import com.Homework.AnimalShelter.model.Bot;
 import com.pengrad.telegrambot.TelegramBot;
 import com.pengrad.telegrambot.UpdatesListener;
 import com.pengrad.telegrambot.model.Chat;

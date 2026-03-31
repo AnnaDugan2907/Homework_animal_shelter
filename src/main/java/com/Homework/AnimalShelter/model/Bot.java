@@ -1,8 +1,7 @@
-package com.Homework.AnimalShelter.service;
+package com.Homework.AnimalShelter.model;
 
 
 import com.Homework.AnimalShelter.info.ShelterInfoProvider;
-import com.Homework.AnimalShelter.model.*;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;

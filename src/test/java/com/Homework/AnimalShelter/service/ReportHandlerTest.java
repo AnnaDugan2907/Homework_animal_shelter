@@ -1,5 +1,6 @@
 package com.Homework.AnimalShelter.service;
 
+import com.Homework.AnimalShelter.model.ReportHandler;
 import com.Homework.AnimalShelter.model.UserSession;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

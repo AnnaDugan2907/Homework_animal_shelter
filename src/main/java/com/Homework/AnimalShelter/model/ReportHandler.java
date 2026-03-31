@@ -1,6 +1,4 @@
-package com.Homework.AnimalShelter.service;
-
-import com.Homework.AnimalShelter.model.UserSession;
+package com.Homework.AnimalShelter.model;
 
 public class ReportHandler {
 

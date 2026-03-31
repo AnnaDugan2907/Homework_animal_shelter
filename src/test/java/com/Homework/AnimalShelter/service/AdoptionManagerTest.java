@@ -4,6 +4,7 @@ package com.Homework.AnimalShelter.service;
 import static org.junit.jupiter.api.Assertions.*;
 
 import com.Homework.AnimalShelter.model.Adopter;
+import com.Homework.AnimalShelter.model.AdoptionManager;
 import com.Homework.AnimalShelter.model.DailyReport;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
