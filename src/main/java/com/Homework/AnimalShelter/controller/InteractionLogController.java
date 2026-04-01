@@ -9,7 +9,6 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
@@ -35,8 +34,8 @@ public class InteractionLogController {
      */
     @GetMapping
     @Operation(description = "Получить все логи взаимодействий")
-    public ResponseEntity<List<InteractionLog>> getAllInteractionLogs() {
-        return ResponseEntity.ok(interactionLogService.getAllInteractionLogs());
+    public List<InteractionLog> getAllInteractionLogs() {
+        return interactionLogService.getAllInteractionLogs();
     }
 
     /**
@@ -48,9 +47,9 @@ public class InteractionLogController {
      */
     @PostMapping
     @Operation(description = "Добавить новый лог взаимодействия")
-    public ResponseEntity<InteractionLog> createInteractionLog(@RequestBody InteractionLog interactionLog) {
-        InteractionLog createdLog = interactionLogService.createInteractionLog(interactionLog);
-        return ResponseEntity.status(HttpStatus.CREATED).body(createdLog);
+    @ResponseStatus(HttpStatus.CREATED)
+    public InteractionLog createInteractionLog(@RequestBody InteractionLog interactionLog) {
+        return interactionLogService.createInteractionLog(interactionLog);
     }
 
     /**
@@ -62,8 +61,8 @@ public class InteractionLogController {
      */
     @GetMapping("/user/{userId}")
     @Operation(description = "Получить логи по пользователю")
-    public ResponseEntity<List<InteractionLog>> getLogsByUser(@PathVariable Long userId) {
-        return ResponseEntity.ok(interactionLogService.findByUserId(userId));
+    public List<InteractionLog> getLogsByUser(@PathVariable Long userId) {
+        return interactionLogService.findByUserId(userId);
     }
 
     /**
@@ -76,10 +75,10 @@ public class InteractionLogController {
      */
     @GetMapping("/period")
     @Operation(description = "Получить логи за период")
-    public ResponseEntity<List<InteractionLog>> getLogsByPeriod(
+    public List<InteractionLog> getLogsByPeriod(
             @RequestParam("startDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date startDate,
             @RequestParam("endDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date endDate) {
-        return ResponseEntity.ok(interactionLogService.findByDateRange(startDate, endDate));
+        return interactionLogService.findByDateRange(startDate, endDate);
     }
 
     /**
@@ -93,19 +92,17 @@ public class InteractionLogController {
      */
     @GetMapping("/user/{userId}/period")
     @Operation(description = "Получить логи по пользователю за период")
-    public ResponseEntity<List<InteractionLog>> getLogsByUserAndPeriod(
+    public List<InteractionLog> getLogsByUserAndPeriod(
             @PathVariable Long userId,
             @RequestParam("startDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date startDate,
             @RequestParam("endDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date endDate) {
-        List<InteractionLog> logs = interactionLogService.findByUserIdAndDateRange(userId, startDate, endDate);
-        return ResponseEntity.ok(logs);
+        return interactionLogService.findByUserIdAndDateRange(userId, startDate, endDate);
     }
 
 
     @GetMapping("/type/{interactionType}")
     @Operation(description = "Получить логи по типу взаимодействия")
-    public ResponseEntity<List<InteractionLog>> getLogsByInteractionType(@PathVariable String interactionType) {
-        List<InteractionLog> logs = interactionLogService.findByInteractionType(interactionType);
-        return ResponseEntity.ok(logs);
+    public List<InteractionLog> getLogsByInteractionType(@PathVariable String interactionType) {
+        return interactionLogService.findByInteractionType(interactionType);
     }
 }

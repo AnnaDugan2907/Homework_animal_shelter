@@ -8,7 +8,6 @@ import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -32,8 +31,8 @@ public class ReminderController {
      */
     @GetMapping
     @Operation(description = "Получить все напоминания")
-    public ResponseEntity<List<Reminder>> getAllReminders() {
-        return ResponseEntity.ok(reminderService.getAllReminders());
+    public List<Reminder> getAllReminders() {
+        return reminderService.getAllReminders();
     }
 
     /**
@@ -44,11 +43,10 @@ public class ReminderController {
      */
     @PostMapping
     @Operation(description = "Добавить новое напоминание")
-    public ResponseEntity<Reminder> createReminder(@RequestBody Reminder reminder) {
-        Reminder createdReminder = reminderService.createReminder(reminder);
-        return ResponseEntity.status(HttpStatus.CREATED).body(createdReminder);
+    @ResponseStatus(HttpStatus.CREATED)
+    public Reminder createReminder(@RequestBody Reminder reminder) {
+        return reminderService.createReminder(reminder);
     }
-
     /**
      * Получение напоминаний по кандидату на усыновление
      * HTTP GET /api/reminders/adopter/{adopterId}
@@ -57,8 +55,8 @@ public class ReminderController {
      */
     @GetMapping("/adopter/{adopterId}")
     @Operation(description = "Получить напоминания по кандидату")
-    public ResponseEntity<List<Reminder>> getRemindersByAdopter(@PathVariable Long adopterId) {
-        return ResponseEntity.ok(reminderService.findByAdopterId(adopterId));
+    public List<Reminder> getRemindersByAdopter(@PathVariable Long adopterId) {
+        return reminderService.findByAdopterId(adopterId);
     }
 
     /**
@@ -68,8 +66,8 @@ public class ReminderController {
      */
     @GetMapping("/unsent")
     @Operation(description = "Получить неотправленные напоминания")
-    public ResponseEntity<List<Reminder>> getUnsentReminders() {
-        return ResponseEntity.ok(reminderService.findUnsentReminders());
+    public List<Reminder> getUnsentReminders() {
+        return reminderService.findUnsentReminders();
     }
 
     /**
@@ -80,9 +78,8 @@ public class ReminderController {
      */
     @PatchMapping("/{id}/mark-sent")
     @Operation(description = "Отметить напоминание как отправленное")
-    public ResponseEntity<Reminder> markReminderAsSent(@PathVariable Long id) {
-        Reminder updatedReminder = reminderService.markAsSent(id)
+    public Reminder markReminderAsSent(@PathVariable Long id) {
+        return reminderService.markAsSent(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Напоминание не найдено"));
-        return ResponseEntity.ok(updatedReminder);
     }
 }

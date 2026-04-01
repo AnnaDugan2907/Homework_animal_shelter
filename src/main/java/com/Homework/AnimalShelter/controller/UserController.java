@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -27,66 +28,69 @@ public class UserController {
     /**
      * Получение списка всех пользователей
      * HTTP GET /api/users
+     *
      * @return Список всех зарегистрированных пользователей
      */
     @GetMapping
     @Operation(description = "Получить всех пользователей")
-    public ResponseEntity<List<ShelterUser>> getAllUsers() {
-        return ResponseEntity.ok(userService.getAllUsers());
+    public List<ShelterUser> getAllUsers() {
+        return userService.getAllUsers();
     }
 
     /**
      * Получение пользователя по ID
      * HTTP GET /api/users/{id}
+     *
      * @param id ID пользователя для поиска
      * @return Найденный пользователь или исключение, если не найден
      */
     @GetMapping("/{id}")
     @Operation(description = "Получить пользователя по ID")
-    public ResponseEntity<ShelterUser> getUserById(@PathVariable Long id) {
-        ShelterUser shelterUser = userService.getUserById(id)
+    public ShelterUser getUserById(@PathVariable Long id) {
+        return userService.getUserById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Пользователь не найден"));
-        return ResponseEntity.ok(shelterUser);
     }
 
     /**
      * Добавление нового пользователя
      * HTTP POST /api/users
+     *
      * @param shelterUser Объект пользователя для создания
      * @return Созданный пользователь с HTTP-статусом 201 (CREATED)
      */
     @PostMapping
     @Operation(description = "Добавить нового пользователя")
-    public ResponseEntity<ShelterUser> createUser(@RequestBody ShelterUser shelterUser) {
-        ShelterUser createdShelterUser = userService.createUser(shelterUser);
-        return ResponseEntity.status(HttpStatus.CREATED).body(createdShelterUser);
+    @ResponseStatus(HttpStatus.CREATED)
+    public ShelterUser createUser(@RequestBody ShelterUser shelterUser) {
+        return userService.createUser(shelterUser);
     }
 
     /**
      * Поиск пользователя по Telegram ID
      * HTTP GET /api/users/telegram/{telegramId}
+     *
      * @param telegramId Telegram ID пользователя для поиска
      * @return Найденный пользователь или исключение, если не найден
      */
     @GetMapping("/telegram/{telegramId}")
     @Operation(description = "Найти пользователя по Telegram ID")
-    public ResponseEntity<ShelterUser> findByTelegramId(@PathVariable String telegramId) {
-        ShelterUser shelterUser = userService.findByTelegramId(telegramId)
+    public ShelterUser findByTelegramId(@PathVariable String telegramId) {
+        return userService.findByTelegramId(telegramId)
                 .orElseThrow(() -> new ResourceNotFoundException("Пользователь с указанным Telegram ID не найден"));
-        return ResponseEntity.ok(shelterUser);
     }
 
 
     /**
      * Обновление существующего пользователя
      * HTTP PUT /api/users/{id}
-     * @param id ID пользователя для обновления
+     *
+     * @param id          ID пользователя для обновления
      * @param shelterUser Обновлённые данные пользователя
      * @return Обновлённый пользователь
      */
     @PutMapping("/{id}")
     @Operation(description = "Обновить существующего пользователя")
-    public ResponseEntity<ShelterUser> updateUser(@PathVariable Long id, @RequestBody ShelterUser shelterUser) {
+    public ShelterUser updateUser(@PathVariable Long id, @RequestBody ShelterUser shelterUser) {
         return userService.getUserById(id)
                 .map(existingShelterUser -> {
                     // Обновляем поля
@@ -100,28 +104,26 @@ public class UserController {
                     existingShelterUser.setTelegramId(shelterUser.getTelegramId());
                     existingShelterUser.setShelter(shelterUser.getShelter());
 
-                    ShelterUser updatedShelterUser = userService.createUser(existingShelterUser); // используем тот же метод для сохранения
-                    return ResponseEntity.ok(updatedShelterUser);
+                    return userService.createUser(existingShelterUser); // используем тот же метод для сохранения
                 })
-                .orElseGet(() -> ResponseEntity.notFound().build());
+                .orElseThrow(() -> new ResourceNotFoundException("Пользователь не найден"));
     }
 
     /**
      * Удаление пользователя по ID
      * HTTP DELETE /api/users/{id}
+     *
      * @param id ID пользователя для удаления
      * @return HTTP-статус 204 (NO_CONTENT) при успешном удалении,
-     *         404 (NOT_FOUND) если пользователь не найден
+     * 404 (NOT_FOUND) если пользователь не найден
      */
     @DeleteMapping("/{id}")
     @Operation(description = "Удалить пользователя по ID")
-    public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteUser(@PathVariable Long id) {
         boolean isDeleted = userService.deleteUser(id);
-
-        if (isDeleted) {
-            return ResponseEntity.noContent().build(); // 204 No Content
-        } else {
-            return ResponseEntity.notFound().build(); // 404 Not Found
+        if (!isDeleted) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
     }
 }

@@ -6,11 +6,10 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
-import java.util.Optional;
 
 /**
  * Контроллер для управления приютами животных
@@ -32,8 +31,8 @@ public class ShelterController {
      */
     @GetMapping
     @Operation(description = "Получить все приюты")
-    public ResponseEntity<List<Shelter>> getAllShelters() {
-        return ResponseEntity.ok(shelterService.getAllShelters());
+    public List<Shelter> getAllShelters() {
+        return shelterService.getAllShelters();
     }
 
     /**
@@ -45,9 +44,9 @@ public class ShelterController {
      */
     @PostMapping
     @Operation(description = "Добавить новый приют")
-    public ResponseEntity<Shelter> createShelter(@RequestBody Shelter shelter) {
-        Shelter createdShelter = shelterService.createShelter(shelter);
-        return ResponseEntity.status(HttpStatus.CREATED).body(createdShelter);
+    @ResponseStatus(HttpStatus.CREATED)
+    public Shelter createShelter(@RequestBody Shelter shelter) {
+        return shelterService.createShelter(shelter);
     }
 
     /**
@@ -57,15 +56,9 @@ public class ShelterController {
      * @param id ID приюта
      * @return Приют с указанным ID или 404, если не найден
      */
-    @GetMapping("/{id}")
-    @Operation(description = "Получить приют по ID")
-    public ResponseEntity<Shelter> getShelterById(@PathVariable Long id) {
-        Optional<Shelter> shelter = shelterService.getShelterById(id);
-        if (shelter.isPresent()) {
-            return ResponseEntity.ok(shelter.get());
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+    public Shelter getShelterById(@PathVariable Long id) {
+        return shelterService.getShelterById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Приют не найден"));
     }
 
     /**
@@ -77,9 +70,8 @@ public class ShelterController {
      */
     @GetMapping("/type/{type}")
     @Operation(description = "Найти приюты по типу")
-    public ResponseEntity<List<Shelter>> findSheltersByType(@PathVariable String type) {
-        List<Shelter> shelters = shelterService.findSheltersByType(type);
-        return ResponseEntity.ok(shelters);
+    public List<Shelter> findSheltersByType(@PathVariable String type) {
+        return shelterService.findSheltersByType(type);
     }
 
     /**
@@ -91,9 +83,8 @@ public class ShelterController {
      */
     @GetMapping("/search")
     @Operation(description = "Поиск приютов по имени")
-    public ResponseEntity<List<Shelter>> searchSheltersByName(@RequestParam String name) {
-        List<Shelter> shelters = shelterService.findSheltersByNameContaining(name);
-        return ResponseEntity.ok(shelters);
+    public List<Shelter> searchSheltersByName(@RequestParam String name) {
+        return shelterService.findSheltersByNameContaining(name);
     }
 
     /**
@@ -106,9 +97,8 @@ public class ShelterController {
      */
     @PutMapping("/{id}")
     @Operation(description = "Обновить приют")
-    public ResponseEntity<Shelter> updateShelter(@PathVariable Long id, @RequestBody Shelter shelter) {
-        Shelter updatedShelter = shelterService.updateShelter(id, shelter);
-        return ResponseEntity.ok(updatedShelter);
+    public Shelter updateShelter(@PathVariable Long id, @RequestBody Shelter shelter) {
+        return shelterService.updateShelter(id, shelter);
     }
 
     /**
@@ -120,8 +110,8 @@ public class ShelterController {
      */
     @DeleteMapping("/{id}")
     @Operation(description = "Удалить приют")
-    public ResponseEntity<Void> deleteShelter(@PathVariable Long id) {
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteShelter(@PathVariable Long id) {
         shelterService.deleteShelter(id);
-        return ResponseEntity.noContent().build();
     }
 }

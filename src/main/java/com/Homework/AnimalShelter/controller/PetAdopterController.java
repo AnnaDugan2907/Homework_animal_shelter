@@ -8,7 +8,6 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
@@ -33,8 +32,8 @@ public class PetAdopterController {
      */
     @GetMapping
     @Operation(description = "Получить всех кандидатов на усыновление")
-    public ResponseEntity<List<PetAdopter>> getAllPetAdopters() {
-        return ResponseEntity.ok(petAdopterService.getAllPetAdopters());
+    public List<PetAdopter> getAllPetAdopters() {
+        return petAdopterService.getAllPetAdopters();
     }
 
     /**
@@ -45,10 +44,9 @@ public class PetAdopterController {
      */
     @GetMapping("/{id}")
     @Operation(description = "Получить кандидата по ID")
-    public ResponseEntity<PetAdopter> getPetAdopterById(@PathVariable Long id) {
-        PetAdopter petAdopter = petAdopterService.getPetAdopterById(id)
+    public PetAdopter getPetAdopterById(@PathVariable Long id) {
+        return petAdopterService.getPetAdopterById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Кандидат не найден"));
-        return ResponseEntity.ok(petAdopter);
     }
 
     /**
@@ -59,9 +57,9 @@ public class PetAdopterController {
      */
     @PostMapping
     @Operation(description = "Добавить нового кандидата на усыновление")
-    public ResponseEntity<PetAdopter> createPetAdopter(@RequestBody PetAdopter petAdopter) {
-        PetAdopter createdPetAdopter = petAdopterService.createPetAdopter(petAdopter);
-        return ResponseEntity.status(HttpStatus.CREATED).body(createdPetAdopter);
+    @ResponseStatus(HttpStatus.CREATED)
+    public PetAdopter createPetAdopter(@RequestBody PetAdopter petAdopter) {
+        return petAdopterService.createPetAdopter(petAdopter);
     }
 
     /**
@@ -72,8 +70,8 @@ public class PetAdopterController {
      */
     @GetMapping("/status/{status}")
     @Operation(description = "Получить кандидатов по статусу усыновления")
-    public ResponseEntity<List<PetAdopter>> getPetAdoptersByStatus(@PathVariable String status) {
-        return ResponseEntity.ok(petAdopterService.findByAdoptionStatus(status));
+    public List<PetAdopter> getPetAdoptersByStatus(@PathVariable String status) {
+        return petAdopterService.findByAdoptionStatus(status);
     }
 
     /**
@@ -84,8 +82,8 @@ public class PetAdopterController {
      */
     @GetMapping("/user/{userId}")
     @Operation(description = "Получить кандидатов по ID пользователя")
-    public ResponseEntity<List<PetAdopter>> getPetAdoptersByUserId(@PathVariable Integer userId) {
-        return ResponseEntity.ok(petAdopterService.findByUserId(userId));
+    public List<PetAdopter> getPetAdoptersByUserId(@PathVariable Integer userId) {
+        return petAdopterService.findByUserId(userId);
     }
 
     /**
@@ -96,8 +94,8 @@ public class PetAdopterController {
      */
     @GetMapping("/shelter/{shelterId}")
     @Operation(description = "Получить кандидатов по ID приюта")
-    public ResponseEntity<List<PetAdopter>> getPetAdoptersByShelterId(@PathVariable Integer shelterId) {
-        return ResponseEntity.ok(petAdopterService.findByShelterId(shelterId));
+    public List<PetAdopter> getPetAdoptersByShelterId(@PathVariable Integer shelterId) {
+        return petAdopterService.findByShelterId(shelterId);
     }
 
     /**
@@ -108,8 +106,8 @@ public class PetAdopterController {
      */
     @GetMapping("/pet-type/{petType}")
     @Operation(description = "Получить кандидатов по типу питомца")
-    public ResponseEntity<List<PetAdopter>> getPetAdoptersByPetType(@PathVariable String petType) {
-        return ResponseEntity.ok(petAdopterService.findByPetType(petType));
+    public List<PetAdopter> getPetAdoptersByPetType(@PathVariable String petType) {
+        return petAdopterService.findByPetType(petType);
     }
 
     /**
@@ -121,12 +119,11 @@ public class PetAdopterController {
      */
     @GetMapping("/{id}/shelter/{shelterId}")
     @Operation(description = "Получить кандидата по ID и приюту")
-    public ResponseEntity<PetAdopter> getPetAdopterByIdAndShelter(
+    public PetAdopter getPetAdopterByIdAndShelter(
             @PathVariable Long id,
             @PathVariable Integer shelterId) {
-        PetAdopter petAdopter = petAdopterService.findByIdAndShelterId(id, shelterId)
+        return petAdopterService.findByIdAndShelterId(id, shelterId)
                 .orElseThrow(() -> new ResourceNotFoundException("Кандидат не найден в указанном приюте"));
-        return ResponseEntity.ok(petAdopter);
     }
 
     /**
@@ -137,9 +134,9 @@ public class PetAdopterController {
      */
     @GetMapping("/trial-end-before/{date}")
     @Operation(description = "Получить кандидатов с датой окончания пробного периода до указанной даты")
-    public ResponseEntity<List<PetAdopter>> getPetAdoptersByTrialEndDateBefore(
+    public List<PetAdopter> getPetAdoptersByTrialEndDateBefore(
             @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
-        return ResponseEntity.ok(petAdopterService.findByTrialEndDateBefore(date));
+        return petAdopterService.findByTrialEndDateBefore(date);
     }
 
     /**
@@ -151,16 +148,13 @@ public class PetAdopterController {
      */
     @PutMapping("/{id}")
     @Operation(description = "Обновить информацию о кандидате на усыновление")
-    public ResponseEntity<PetAdopter> updatePetAdopter(
+    public PetAdopter updatePetAdopter(
             @PathVariable Long id,
             @RequestBody PetAdopter updatedPetAdopter) {
-        // Проверяем существование кандидата
         petAdopterService.getPetAdopterById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Кандидат не найден"));
-
         updatedPetAdopter.setId(id);
-        PetAdopter savedPetAdopter = petAdopterService.createPetAdopter(updatedPetAdopter);
-        return ResponseEntity.ok(savedPetAdopter);
+        return petAdopterService.createPetAdopter(updatedPetAdopter);
     }
 
     /**
@@ -171,10 +165,10 @@ public class PetAdopterController {
      */
     @DeleteMapping("/{id}")
     @Operation(description = "Удалить кандидата на усыновление")
-    public ResponseEntity<Void> deletePetAdopter(@PathVariable Long id) {
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deletePetAdopter(@PathVariable Long id) {
         petAdopterService.getPetAdopterById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Кандидат не найден"));
         petAdopterService.deletePetAdopter(id);
-        return ResponseEntity.noContent().build();
     }
 }

@@ -34,8 +34,8 @@ public class PetReportController {
      */
     @GetMapping
     @Operation(description = "Получить все отчёты о питомцах")
-    public ResponseEntity<List<PetReport>> getAllPetReports() {
-        return ResponseEntity.ok(petReportService.getAllPetReports());
+    public List<PetReport> getAllPetReports() {
+        return petReportService.getAllPetReports();
     }
 
     /**
@@ -59,8 +59,8 @@ public class PetReportController {
      */
     @GetMapping("/adopter/{adopterId}")
     @Operation(description = "Получить отчёты по кандидату")
-    public ResponseEntity<List<PetReport>> getReportsByAdopterId(@PathVariable Long adopterId) {
-        return ResponseEntity.ok(petReportService.findByAdopterId(adopterId));
+    public List<PetReport> getReportsByAdopterId(@PathVariable Long adopterId) {
+        return petReportService.findByAdopterId(adopterId);
     }
 
     /**
@@ -70,8 +70,8 @@ public class PetReportController {
      */
     @GetMapping("/complaints")
     @Operation(description = "Получить отчёты с жалобами")
-    public ResponseEntity<List<PetReport>> getComplaintReports() {
-        return ResponseEntity.ok(petReportService.findComplaintReports());
+    public List<PetReport> getComplaintReports() {
+        return petReportService.findComplaintReports();
     }
 
     /**
@@ -82,8 +82,8 @@ public class PetReportController {
      */
     @GetMapping("/date/{date}")
     @Operation(description = "Получить отчёты за конкретную дату")
-    public ResponseEntity<List<PetReport>> getReportsByDate(@PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
-        return ResponseEntity.ok(petReportService.findByReportDate(date));
+    public List<PetReport> getReportsByDate(@PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
+        return petReportService.findByReportDate(date);
     }
 
     /**
@@ -94,8 +94,8 @@ public class PetReportController {
      */
     @GetMapping("/status/{status}")
     @Operation(description = "Получить отчёты по статусу")
-    public ResponseEntity<List<PetReport>> getReportsByStatus(@PathVariable String status) {
-        return ResponseEntity.ok(petReportService.findByReportStatus(status));
+    public List<PetReport> getReportsByStatus(@PathVariable String status) {
+        return petReportService.findByReportStatus(status);
     }
 
     /**
@@ -108,15 +108,13 @@ public class PetReportController {
      */
     @GetMapping("/adopter/{adopterId}/period")
     @Operation(description = "Получить отчёты кандидата за период")
-    public ResponseEntity<List<PetReport>> getReportsByAdopterInPeriod(
+    public List<PetReport> getReportsByAdopterInPeriod(
             @PathVariable Long adopterId,
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate) {
 
         PetAdopter adopter = new PetAdopter();
         adopter.setId(adopterId);
-
-        List<PetReport> reports = petReportService.findReportsByAdopterInPeriod(adopter, startDate, endDate);
-        return ResponseEntity.ok(reports);
+        return petReportService.findReportsByAdopterInPeriod(adopter, startDate, endDate);
     }
 }
